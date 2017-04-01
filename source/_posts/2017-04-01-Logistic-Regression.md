@@ -47,7 +47,7 @@ $$\begin{equation}
 P(Y=0|x)=\frac{1}{1+e^{w\cdot x+b}}
 \end{equation}$$
 
-其中$ w $称为权重，$ b $称为偏置，其中的$ w⋅x+b $看成对$ x $的线性函数，有时候为了书写方便，会将$ b $写入$ w $，即 $ w=(w_1,…,w_n;b) $ ，并取$ x=(x_1,…,x_n;1) $。然后对比上面两个概率值，概率值大的就是$ x $对应的类。
+其中$ w $称为权重，$ b $称为偏置，其中的$ w⋅x+b $看成对$ x $的线性函数，有时候为了书写方便，会将$ b $写入$ w $，即 $ w=(b,w_1,…,w_n) $ ，并取$ x=(1,x_1,…,x_n) $。然后对比上面两个概率值，概率值大的就是$ x $对应的类。
 
 又已知一个事件发生的几率`odds`是指该事件发生与不发生的概率比值，二分类情况下即$ \frac{P(Y=1|x)}{P(Y=0|x)}=\frac{P(Y=1|x)}{1−P(Y=1|x)} $。取`odds`的对数就是上面提到的`logistic function`，$ logistic(P(Y=1|x))=log\frac{P(Y=1|x)}{1−P(Y=1|x)}=w⋅x $。从而可以得到一种对逻辑回归的定义，**输出$ Y=1 $的对数几率是由输入$ x $的线性函数表示的模型，即逻辑斯蒂回归模型(李航.《统计机器学习》)**。而直接考察公式$\eqref{eq:logistic1}$可以得到另一种对逻辑回归的定义，**线性函数的值越接近正无穷，概率值就越接近1；线性值越接近负无穷，概率值越接近0，这样的模型是逻辑斯蒂回归模型(李航.《统计机器学习》)**。因此逻辑回归的思路是，先拟合决策边界(这里的决策边界不局限于线性，还可以是多项式)，再建立这个边界与分类的概率联系，从而得到了二分类情况下的概率。
 
@@ -91,6 +91,14 @@ w^{k+1}_j &=& w^k_j+α(-g_j)\\\\
 $ k $为迭代次数。每次更新参数后，可以通过比较$||J(w^{k+1})−J(w^k)||$或者$ ||w^{k+1}−w^k ||$与某个阈值$ \epsilon $大小的方式来停止迭代，即比阈值小就停止。
 
 > 如果采用梯度上升法来推到参数的更新方式，会发现式子与公式$\eqref{eq:lr-gd}$完全一样，所以采用梯度上升发和梯度下降法是一样的。
+
+## 随机梯度下降法
+
+从上面梯度下降法中的公式$\eqref{eq:lr-gd}$中可以看到，每次更新回归系数时都需要遍历整个数据集，如果有数十亿样本和成千上万个特征，则梯度下降法的计算复杂度就太高了。随机梯度下降法一次仅用一个样本点来更新回归系数：
+
+$$\begin{equation}
+w^{k+1}_j = w^k\_j+α (y^{(i)}-h\_w(x^{(i)}))x\_{j}^{(i)}
+\end{equation}$$
 
 ## 梯度下降过程向量化
 
@@ -271,9 +279,62 @@ $$
 
 ## 逻辑回归与能量模型
 
+-->
+
+
 # 《机器学习实战》代码
 
--->
+梯度上升法：
+
+```python
+def gradAscent(dataMatIn, classLabels):
+    """梯度上升法"""
+    dataMatrix = mat(dataMatIn)
+    labelMat = mat(classLabels).transpose()
+    m, n = shape(dataMatrix)
+    alpha = 0.1
+    maxCycles = 500
+    weights = ones((n, 1))
+    for k in range(maxCycles):
+        a = dataMatrix * weights
+        h = sigmoid(dataMatrix * weights)  # 100*3 3*1
+        error = (labelMat - h)
+        weights = weights + alpha / m * dataMatrix.transpose() * error
+    return weights
+```
+
+随机梯度下降法：
+
+``` python
+def stocGradAscent0(dataMatrix, classLabels):
+    """随机梯度上升法，但是迭代次数不够，且可能存在局部波动现象"""
+    m, n = shape(dataMatrix)
+    alpha = 0.01
+    weights = ones(n)
+    for i in range(m):
+        h = sigmoid(sum(dataMatrix[i] * weights))
+        error = classLabels[i] - h
+        weights = weights + alpha * error * dataMatrix[i]
+    return weights
+
+
+def stocGradAscent1(dataMatrix, classLabels, numIter=150):
+    """改进的随机梯度上升法"""
+    m, n = dataMatrix.shape
+    weights = ones(n)
+    for j in range(numIter):
+        dataIndex = range(m)
+        for i in range(m):
+            alpha = 4 / (1.0 + j + i) + 0.01 # alpha在每次迭代时都进行了调整
+            randIndex = int(random.uniform(0, len(dataIndex))) # 随机选取样本数据
+            h = sigmoid(sum(dataMatrix[randIndex] * weights))
+            error = classLabels[randIndex] - h
+            weights = weights + alpha * error * dataMatrix[randIndex]
+            del (dataIndex[randIndex])
+    return weights
+```
+
+
 
 # 参考文献
 
