@@ -1,9 +1,8 @@
 ---
 title: 删除已经提交的Ignore file
 date: 2017-03-31 18:55:30
-categories: tools
+categories: git
 tags:
-- tools
 - git
 - ignore
 toc: false
