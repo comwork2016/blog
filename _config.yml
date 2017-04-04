@@ -65,8 +65,6 @@ pagination_dir: page
 ## Plugins: https://hexo.io/plugins/
 ## Themes: https://hexo.io/themes/
 theme: jacman
-stylus:
-  compress: true
 
 
 # Deployment
