@@ -229,7 +229,7 @@ Copy过来的数据会先放入内存缓冲区中，这里的缓冲区大小要�
 
 merge的最后会生成一个文件，大多数情况下存在于磁盘中，但是需要将其放入内存中。当reducer 输入文件已定，整个 Shuffle 阶段才算结束。然后就是 Reducer 执行，把结果放到 HDFS 上。
 
-Reduce的数目建议是0.95或1.75乘以 (`&lt;no. of nodes&gt; * mapred.tasktracker.reduce.tasks.maximum`)。
+Reduce的数目建议是0.95或1.75乘以 (`<no. of nodes> * mapred.tasktracker.reduce.tasks.maximum`)。
 
 用0.95，所有reduce可以在maps一完成时就立刻启动，开始传输map的输出结果。用1.75，速度快的节点可以在完成第一轮reduce任务后，可以开始第二轮，这样可以得到比较好的负载均衡的效果。
 
