@@ -3,7 +3,6 @@ title: Logistic Regression
 date: 2017-04-01 09:12:45
 categories: ML
 tags:
-- ML
 - LR
 ---
 

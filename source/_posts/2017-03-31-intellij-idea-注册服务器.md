@@ -10,6 +10,6 @@ toc: false
 
 Intellij idea 注册服务器地址
 
-lisense server address: http://www.iteblog.com/idea/key.php
+lisense server address: http://idea.iteblog.com/key.php
 
 服务器更新地址:http://idea.lanyus.com/
